@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dinossauros | DinoBase</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<header>
+
+    <a href="{{ url_for('inicio') }}" class="logo">
+        🦖 Dino<span>Base</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('inicio') }}">Início</a>
+        <a href="{{ url_for('listar') }}">Dinossauros</a>
+        <a href="{{ url_for('cadastrar') }}">Cadastrar</a>
+    </nav>
+
+</header>
+
+
+<main class="page">
+
+    <section class="page-heading">
+
+        <div>
+
+            <span class="eyebrow">BANCO DE DADOS</span>
+
+            <h1>Dinossauros</h1>
+
+            <p>
+                Registros armazenados no dinossauros.db.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('cadastrar') }}"
+            class="btn btn-primary"
+        >
+            + Cadastrar dinossauro
+        </a>
+
+    </section>
+
+
+    <section class="table-wrapper">
+
+        {% if dinossauros %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Foto</th>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th>Espécie</th>
+                    <th>Ações</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for dino in dinossauros %}
+
+                <tr>
+
+                    <td>
+
+                        {% if dino['imagem'] %}
+
+                            <img
+                                class="table-dino-image"
+                                src="{{ url_for('uploaded_file', filename=dino['imagem']) }}"
+                                alt="Foto de {{ dino['nome'] }}"
+                            >
+
+                        {% else %}
+
+                            <div class="table-dino-placeholder">
+                                🦖
+                            </div>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+                        <span class="id-badge">
+                            #{{ dino['id'] }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>{{ dino['nome'] }}</strong>
+                    </td>
+
+                    <td>
+                        {{ dino['idade'] }} anos
+                    </td>
+
+                    <td>
+                        <span class="species">
+                            {{ dino['especie'] }}
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <div class="actions">
+
+                            <a
+                                href="{{ url_for('editar', id=dino['id']) }}"
+                                class="btn-small edit"
+                            >
+                                Editar
+                            </a>
+
+                            <form
+                                action="{{ url_for('excluir', id=dino['id']) }}"
+                                method="POST"
+                                onsubmit="return confirm('Tem certeza que deseja excluir este dinossauro?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn-small delete"
+                                >
+                                    Excluir
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+
+            <div>🦴</div>
+
+            <h2>Nenhum dinossauro encontrado</h2>
+
+            <p>
+                O banco de dados está vazio.
+            </p>
+
+            <a
+                href="{{ url_for('cadastrar') }}"
+                class="btn btn-primary"
+            >
+                Cadastrar dinossauro
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        🦖 <strong>DinoBase</strong>
+        — Explorando o passado.
+    </p>
+
+</footer>
+
+</body>
+</html>

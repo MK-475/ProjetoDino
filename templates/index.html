@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DinoBase | Início</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<header>
+
+    <a href="{{ url_for('inicio') }}" class="logo">
+        🦖 Dino<span>Base</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('inicio') }}">Início</a>
+        <a href="{{ url_for('listar') }}">Dinossauros</a>
+        <a href="{{ url_for('cadastrar') }}">Cadastrar</a>
+    </nav>
+
+</header>
+
+
+<main>
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <span class="eyebrow">BANCO DE DINOSSAUROS</span>
+
+            <h1>
+                Explore o mundo dos
+                <span>dinossauros</span>
+            </h1>
+
+            <p>
+                Conheça, cadastre e organize informações
+                sobre dinossauros usando um sistema web
+                conectado a um banco de dados SQLite.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a
+                    href="{{ url_for('listar') }}"
+                    class="btn btn-primary"
+                >
+                    Explorar dinossauros →
+                </a>
+
+                <a
+                    href="{{ url_for('cadastrar') }}"
+                    class="btn btn-secondary"
+                >
+                    + Cadastrar
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="stats">
+
+        <div class="stat">
+            <div class="stat-icon">🦖</div>
+
+            <div>
+                <strong>{{ total }}</strong>
+                <span>dinossauros cadastrados</span>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">🗄️</div>
+
+            <div>
+                <strong>SQLite</strong>
+                <span>banco de dados</span>
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">🐍</div>
+
+            <div>
+                <strong>Python</strong>
+                <span>Flask</span>
+            </div>
+        </div>
+
+    </section>
+
+
+    <section class="dinosaurs">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="eyebrow">REGISTROS DO BANCO</span>
+
+                <h2>Dinossauros cadastrados</h2>
+            </div>
+
+            <a
+                href="{{ url_for('listar') }}"
+                class="see-all"
+            >
+                Ver todos →
+            </a>
+
+        </div>
+
+
+        <div class="cards">
+
+            {% for dino in dinossauros[:6] %}
+
+            <article class="card">
+
+                <div class="card-image">
+
+                    {% if dino['imagem'] %}
+
+                        <img
+                            src="{{ url_for('uploaded_file', filename=dino['imagem']) }}"
+                            alt="Foto de {{ dino['nome'] }}"
+                        >
+
+                    {% else %}
+
+                        🦖
+
+                    {% endif %}
+
+                </div>
+
+                <div class="card-content">
+
+                    <span class="id-label">
+                        ID #{{ dino['id'] }}
+                    </span>
+
+                    <h3>{{ dino['nome'] }}</h3>
+
+                    <div class="details">
+
+                        <span>
+                            ⏳ {{ dino['idade'] }} anos
+                        </span>
+
+                        <span>
+                            🌿 {{ dino['especie'] }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% else %}
+
+            <div class="empty">
+
+                <div>🦴</div>
+
+                <h3>Nenhum dinossauro cadastrado</h3>
+
+                <p>
+                    Cadastre o primeiro dinossauro.
+                </p>
+
+                <a
+                    href="{{ url_for('cadastrar') }}"
+                    class="btn btn-primary"
+                >
+                    Cadastrar dinossauro
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <section class="about">
+
+        <div class="about-box">
+
+            <span class="eyebrow">SOBRE O PROJETO</span>
+
+            <h2>DinoBase</h2>
+
+            <p>
+                O projeto separa a interface, as rotas e as
+                operações do banco de dados. O Flask conecta
+                as páginas HTML ao SQLite.
+            </p>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        🦖 <strong>DinoBase</strong>
+        — Explorando o passado.
+    </p>
+
+</footer>
+
+</body>
+</html>

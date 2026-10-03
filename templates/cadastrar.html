@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% if modo_edicao %}
+            Editar | DinoBase
+        {% else %}
+            Cadastrar | DinoBase
+        {% endif %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<header>
+
+    <a href="{{ url_for('inicio') }}" class="logo">
+        🦖 Dino<span>Base</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('inicio') }}">Início</a>
+        <a href="{{ url_for('listar') }}">Dinossauros</a>
+        <a href="{{ url_for('cadastrar') }}">Cadastrar</a>
+    </nav>
+
+</header>
+
+
+<main class="page">
+
+    <section class="form-section">
+
+        <div class="form-heading">
+
+            <span class="eyebrow">
+                {% if modo_edicao %}
+                    ATUALIZAÇÃO
+                {% else %}
+                    NOVO REGISTRO
+                {% endif %}
+            </span>
+
+            <h1>
+                {% if modo_edicao %}
+                    Editar dinossauro
+                {% else %}
+                    Cadastrar dinossauro
+                {% endif %}
+            </h1>
+
+            <p>
+                {% if modo_edicao %}
+                    Altere as informações abaixo e, se quiser, troque a foto.
+                {% else %}
+                    Adicione um novo dinossauro ao banco de dados.
+                {% endif %}
+            </p>
+
+        </div>
+
+
+        {% if mensagem %}
+
+        <div class="message">
+            ⚠️ {{ mensagem }}
+        </div>
+
+        {% endif %}
+
+
+        <form
+            class="dino-form"
+            method="POST"
+            enctype="multipart/form-data"
+            action="{% if modo_edicao %}{{ url_for('editar', id=dinossauro['id']) }}{% else %}{{ url_for('cadastrar') }}{% endif %}"
+        >
+
+            <div class="form-group">
+
+                <label for="nome">
+                    Nome do dinossauro
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    placeholder="Ex.: T-Rex"
+                    value="{{ dinossauro['nome'] if modo_edicao else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="idade">
+                    Idade
+                </label>
+
+                <input
+                    type="number"
+                    id="idade"
+                    name="idade"
+                    min="1"
+                    placeholder="Ex.: 8"
+                    value="{{ dinossauro['idade'] if modo_edicao else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="especie">
+                    Espécie
+                </label>
+
+                <input
+                    type="text"
+                    id="especie"
+                    name="especie"
+                    placeholder="Ex.: Carnívoro"
+                    value="{{ dinossauro['especie'] if modo_edicao else '' }}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="imagem">
+                    Foto do dinossauro
+                </label>
+
+                <div class="upload-box">
+
+                    <div
+                        id="preview-container"
+                        class="preview-container {% if not modo_edicao or not dinossauro['imagem'] %}sem-imagem{% endif %}"
+                    >
+
+                        {% if modo_edicao and dinossauro['imagem'] %}
+
+                            <img
+                                id="preview"
+                                src="{{ url_for('uploaded_file', filename=dinossauro['imagem']) }}"
+                                alt="Foto de {{ dinossauro['nome'] }}"
+                            >
+
+                        {% else %}
+
+                            <div id="placeholder">
+                                🦖
+                                <span>Prévia da foto</span>
+                            </div>
+
+                            <img
+                                id="preview"
+                                alt="Prévia da foto"
+                                style="display: none;"
+                            >
+
+                        {% endif %}
+
+                    </div>
+
+                    <input
+                        type="file"
+                        id="imagem"
+                        name="imagem"
+                        accept="image/png,image/jpeg,image/gif,image/webp"
+                    >
+
+                    <small>
+                        JPG, JPEG, PNG, GIF ou WEBP — máximo de 5 MB.
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <a
+                    href="{{ url_for('listar') }}"
+                    class="btn btn-secondary"
+                >
+                    Cancelar
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    {% if modo_edicao %}
+                        Salvar alterações
+                    {% else %}
+                        Cadastrar dinossauro
+                    {% endif %}
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        🦖 <strong>DinoBase</strong>
+        — Explorando o passado.
+    </p>
+
+</footer>
+
+
+<script>
+    const campoImagem = document.getElementById("imagem");
+    const preview = document.getElementById("preview");
+    const placeholder = document.getElementById("placeholder");
+
+    campoImagem.addEventListener("change", function () {
+
+        const arquivo = this.files[0];
+
+        if (!arquivo) {
+            return;
+        }
+
+        const leitor = new FileReader();
+
+        leitor.onload = function (evento) {
+
+            preview.src = evento.target.result;
+            preview.style.display = "block";
+
+            if (placeholder) {
+                placeholder.style.display = "none";
+            }
+        };
+
+        leitor.readAsDataURL(arquivo);
+    });
+</script>
+
+</body>
+</html>
